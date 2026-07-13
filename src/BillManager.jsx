@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Trash2, Plus, FileImage, Download, Search, RefreshCw } from 'lucide-react';
+import { Trash2, Plus, Calendar, FileImage, Download, Search, BarChart3, RefreshCw, FolderOpen, Camera, X } from 'lucide-react';
 
 export default function BillManager() {
   const [bills, setBills] = useState({});
@@ -8,6 +8,7 @@ export default function BillManager() {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterDate, setFilterDate] = useState('all');
   const [sortBy, setSortBy] = useState('newest');
+  const [viewImage, setViewImage] = useState(null); // pura photo dekhne ke liye
 
   // Load bills from localStorage on mount
   useEffect(() => {
@@ -185,7 +186,8 @@ export default function BillManager() {
         {/* Header */}
         <div style={{ textAlign: 'center', color: 'white', marginBottom: '30px' }}>
           <h1 style={{ fontSize: '2.8em', margin: '0 0 10px 0' }}>📋 Bill Manager Pro</h1>
-          <p style={{ fontSize: '1.1em', margin: '0', opacity: 0.9 }}>सभी बिल को आसानी से organize करें</p>
+          <p style={{ fontSize: '1.1em', margin: '0 0 4px 0', opacity: 0.9 }}>सभी बिल को आसानी से organize करें</p>
+          <p style={{ fontSize: '0.9em', margin: '0', opacity: 0.75 }}>Organize all your bills, effortlessly</p>
         </div>
 
         {/* Statistics */}
@@ -305,11 +307,38 @@ export default function BillManager() {
             onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
             >
               <Plus size={18} style={{ marginRight: '8px' }} />
-              {loading ? 'Upload हो रहा है...' : 'बिल जोड़ें'}
+              {loading ? 'Upload हो रहा है...' : 'Gallery से चुनें'}
               <input
                 type="file"
                 multiple
                 accept="image/*"
+                onChange={handleFileUpload}
+                disabled={loading}
+                style={{ display: 'none' }}
+              />
+            </label>
+
+            <label style={{
+              display: 'inline-flex',
+              background: 'linear-gradient(135deg, #ff6b6b 0%, #ee5253 100%)',
+              color: 'white',
+              padding: '12px 25px',
+              borderRadius: '8px',
+              cursor: 'pointer',
+              fontWeight: 'bold',
+              fontSize: '1em',
+              alignItems: 'center',
+              transition: 'transform 0.2s'
+            }}
+            onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
+            onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
+            >
+              <Camera size={18} style={{ marginRight: '8px' }} />
+              {loading ? 'Upload हो रहा है...' : 'कैमरा से खींचें'}
+              <input
+                type="file"
+                accept="image/*"
+                capture="environment"
                 onChange={handleFileUpload}
                 disabled={loading}
                 style={{ display: 'none' }}
@@ -524,11 +553,13 @@ export default function BillManager() {
                           <img
                             src={bill.data}
                             alt={bill.name}
+                            onClick={() => setViewImage(bill)}
                             style={{
                               width: '100%',
                               height: '150px',
                               objectFit: 'cover',
-                              display: 'block'
+                              display: 'block',
+                              cursor: 'pointer'
                             }}
                           />
                           <div style={{ padding: '12px' }}>
@@ -650,11 +681,13 @@ export default function BillManager() {
                         <img
                           src={bill.data}
                           alt={bill.name}
+                          onClick={() => setViewImage(bill)}
                           style={{
                             width: '100%',
                             height: '150px',
                             objectFit: 'cover',
-                            display: 'block'
+                            display: 'block',
+                            cursor: 'pointer'
                           }}
                         />
                         <div style={{ padding: '12px' }}>
@@ -713,6 +746,87 @@ export default function BillManager() {
           )}
         </div>
 
+        {/* Full Photo Modal */}
+        {viewImage && (
+          <div
+            onClick={() => setViewImage(null)}
+            style={{
+              position: 'fixed',
+              top: 0,
+              left: 0,
+              width: '100%',
+              height: '100%',
+              background: 'rgba(0,0,0,0.9)',
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'center',
+              alignItems: 'center',
+              zIndex: 1000,
+              padding: '20px',
+              boxSizing: 'border-box'
+            }}
+          >
+            <button
+              onClick={() => setViewImage(null)}
+              style={{
+                position: 'absolute',
+                top: '20px',
+                right: '20px',
+                background: 'rgba(255,255,255,0.15)',
+                border: '2px solid white',
+                color: 'white',
+                borderRadius: '50%',
+                width: '44px',
+                height: '44px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                cursor: 'pointer'
+              }}
+            >
+              <X size={24} />
+            </button>
+
+            <img
+              src={viewImage.data}
+              alt={viewImage.name}
+              onClick={(e) => e.stopPropagation()}
+              style={{
+                maxWidth: '95%',
+                maxHeight: '80vh',
+                objectFit: 'contain',
+                borderRadius: '8px',
+                boxShadow: '0 10px 40px rgba(0,0,0,0.5)'
+              }}
+            />
+
+            <div style={{ color: 'white', textAlign: 'center', marginTop: '15px' }}>
+              <p style={{ margin: '0 0 5px 0', fontSize: '1.1em', fontWeight: 'bold' }}>{viewImage.name}</p>
+              <p style={{ margin: '0', fontSize: '0.85em', opacity: 0.8 }}>⏰ {viewImage.uploadedAt} &nbsp;|&nbsp; 💾 {viewImage.size}</p>
+              <a
+                href={viewImage.data}
+                download={viewImage.name}
+                onClick={(e) => e.stopPropagation()}
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  marginTop: '15px',
+                  background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                  color: 'white',
+                  padding: '10px 20px',
+                  borderRadius: '8px',
+                  textDecoration: 'none',
+                  fontWeight: 'bold',
+                  fontSize: '0.9em'
+                }}
+              >
+                <Download size={16} style={{ marginRight: '6px' }} />
+                Photo Download करें
+              </a>
+            </div>
+          </div>
+        )}
+
         {/* Footer */}
         <div style={{
           textAlign: 'center',
@@ -722,9 +836,15 @@ export default function BillManager() {
           fontSize: '0.95em',
           lineHeight: '1.8'
         }}>
-          <p>✅ सभी डेटा आपके browser में safe रहता है - कभी lose नहीं होगा</p>
-          <p>📱 Netlify में upload करके WebIntoApp.com से native app बनाएं</p>
-          <p>🔄 Backup लें और कभी भी restore करें</p>
+          <p style={{ fontSize: '1.15em', fontWeight: 'bold', margin: '0 0 6px 0' }}>
+            📋 Bill Manager Pro
+          </p>
+          <p style={{ margin: '0 0 4px 0', opacity: 0.95 }}>
+            आपके सभी बिल, एक जगह, हमेशा सुरक्षित 🔒
+          </p>
+          <p style={{ margin: '0', opacity: 0.85, fontSize: '0.9em' }}>
+            All your bills, in one place, always secure 🔒
+          </p>
         </div>
       </div>
     </div>
