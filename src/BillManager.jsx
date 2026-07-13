@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Trash2, Plus, Calendar, FileImage, Download, Search, BarChart3, RefreshCw, FolderOpen } from 'lucide-react';
+import { Trash2, Plus, FileImage, Download, Search, RefreshCw } from 'lucide-react';
 
 export default function BillManager() {
   const [bills, setBills] = useState({});
