@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="hi">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#667eea" />
+    <meta
+      name="description"
+      content="Bill Manager Pro - बिल को आसानी से organize करें। Date-wise bill storage, search, export और बहुत कुछ।"
+    />
+    <meta name="keywords" content="bill, billing, management, app, organize, bills" />
+    <meta name="author" content="Bill Manager" />
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
+    
+    <title>📋 Bill Manager Pro - बिल को संरक्षित रखें</title>
+    
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      html, body {
+        width: 100%;
+        height: 100%;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+          'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+          sans-serif;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+
+      #root {
+        width: 100%;
+        height: 100%;
+      }
+
+      body {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+      }
+
+      /* Loading state */
+      .loading {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        color: white;
+        font-size: 1.2em;
+      }
+
+      @keyframes spin {
+        from {
+          transform: rotate(0deg);
+        }
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      .spinner {
+        border: 4px solid rgba(255, 255, 255, 0.3);
+        border-top: 4px solid white;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        animation: spin 1s linear infinite;
+        margin-right: 15px;
+      }
+    </style>
+  </head>
+  <body>
+    <noscript>
+      <div style="text-align: center; padding: 50px; color: #333; font-size: 1.2em;">
+        <p>⚠️ इस App को चलाने के लिए JavaScript को enable करना जरूरी है।</p>
+        <p>अपने browser की settings में जाकर JavaScript को enable करें।</p>
+      </div>
+    </noscript>
+
+    <div id="root">
+      <div class="loading">
+        <div class="spinner"></div>
+        <span>Bill Manager Loading...</span>
+      </div>
+    </div>
+
+    <!-- This HTML file is a template. If you open it directly in the browser, you will see an empty page. -->
+  </body>
+</html>
