@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Trash2, Plus, Calendar, FileImage, Download, Search, BarChart3, RefreshCw, FolderOpen, Camera, X, Globe } from 'lucide-react';
+import { Trash2, Plus, FileImage, Download, Search, RefreshCw, Camera, X, Globe } from 'lucide-react';
 
 // Saari UI strings — Hindi aur English dono / All UI strings — both Hindi and English
 const translations = {
