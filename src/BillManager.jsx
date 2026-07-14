@@ -1,7 +1,89 @@
 import React, { useState, useEffect } from 'react';
-import { Trash2, Plus, Calendar, FileImage, Download, Search, BarChart3, RefreshCw, FolderOpen, Camera, X } from 'lucide-react';
+import { Trash2, Plus, Calendar, FileImage, Download, Search, BarChart3, RefreshCw, FolderOpen, Camera, X, Globe } from 'lucide-react';
+
+// Saari UI strings — Hindi aur English dono / All UI strings — both Hindi and English
+const translations = {
+  hi: {
+    appName: '📋 Bill Manager Pro',
+    subtitle: 'सभी बिल को आसानी से organize करें',
+    statTotalBills: '📊 कुल बिल',
+    statTotalDays: '📅 कुल दिन',
+    statToday: '⏰ आज',
+    statTotalSize: '💾 कुल Size',
+    selectDate: '📅 तारीख चुनें:',
+    searchBills: '🔍 बिल खोजें:',
+    searchPlaceholder: 'बिल का नाम लिखें...',
+    galleryBtn: 'Gallery से चुनें',
+    cameraBtn: 'कैमरा से खींचें',
+    uploading: 'Upload हो रहा है...',
+    sortNewest: '✨ नई पहले',
+    sortOldest: '🕐 पुरानी पहले',
+    sortName: '🔤 नाम के अनुसार',
+    allDates: '📋 सभी तारीखें',
+    backupBtn: 'Backup लें',
+    exportBtn: 'Export करें',
+    clearAllBtn: 'सब मिटाएं',
+    noBillsTitle: 'अभी कोई बिल नहीं है',
+    noBillsSubtitle: 'अपना पहला बिल add करने के लिए ऊपर क्लिक करें 👆',
+    noResultsTitle: 'कोई बिल नहीं मिला',
+    noResultsSubtitle: 'अलग search या filter try करें',
+    totalWord: 'कुल',
+    billsWord: 'बिल',
+    deleteFolderBtn: 'Folder हटाएं',
+    deleteBtn: 'Delete',
+    confirmDeleteFolder: (date) => `क्या आप ${date} के सभी बिल हटाना चाहते हैं?`,
+    confirmClearAll: '⚠️ क्या आप सभी बिल हटाना चाहते हैं? यह action undo नहीं हो सकता!',
+    alertImportSuccess: '✅ Bills successfully import ho gaye!',
+    alertImportError: '❌ File format galat hai!',
+    alertClearSuccess: '✅ सभी डेटा delete हो गया!',
+    photoDownloadBtn: 'Photo Download करें',
+    footerLine1: 'आपके सभी बिल, एक जगह, हमेशा सुरक्षित 🔒',
+    footerLine2: 'All your bills, in one place, always secure 🔒',
+    dateLocale: 'hi-IN'
+  },
+  en: {
+    appName: '📋 Bill Manager Pro',
+    subtitle: 'Organize all your bills, effortlessly',
+    statTotalBills: '📊 Total Bills',
+    statTotalDays: '📅 Total Days',
+    statToday: '⏰ Today',
+    statTotalSize: '💾 Total Size',
+    selectDate: '📅 Select Date:',
+    searchBills: '🔍 Search Bills:',
+    searchPlaceholder: 'Type bill name...',
+    galleryBtn: 'Choose from Gallery',
+    cameraBtn: 'Take Photo',
+    uploading: 'Uploading...',
+    sortNewest: '✨ Newest First',
+    sortOldest: '🕐 Oldest First',
+    sortName: '🔤 By Name',
+    allDates: '📋 All Dates',
+    backupBtn: 'Restore Backup',
+    exportBtn: 'Export',
+    clearAllBtn: 'Clear All',
+    noBillsTitle: 'No bills yet',
+    noBillsSubtitle: 'Click above to add your first bill 👆',
+    noResultsTitle: 'No bills found',
+    noResultsSubtitle: 'Try a different search or filter',
+    totalWord: 'Total',
+    billsWord: 'bills',
+    deleteFolderBtn: 'Delete Folder',
+    deleteBtn: 'Delete',
+    confirmDeleteFolder: (date) => `Are you sure you want to delete all bills for ${date}?`,
+    confirmClearAll: '⚠️ Are you sure you want to delete all bills? This action cannot be undone!',
+    alertImportSuccess: '✅ Bills imported successfully!',
+    alertImportError: '❌ Invalid file format!',
+    alertClearSuccess: '✅ All data deleted!',
+    photoDownloadBtn: 'Download Photo',
+    footerLine1: 'All your bills, in one place, always secure 🔒',
+    footerLine2: 'आपके सभी बिल, एक जगह, हमेशा सुरक्षित 🔒',
+    dateLocale: 'en-IN'
+  }
+};
 
 export default function BillManager() {
+  const [lang, setLang] = useState('hi'); // 'hi' ya 'en' — jisko jo bhasha aati ho
+  const t = translations[lang];
   const [bills, setBills] = useState({});
   const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
   const [loading, setLoading] = useState(false);
@@ -72,7 +154,7 @@ export default function BillManager() {
 
   // Delete entire date folder
   const deleteDateFolder = (dateKey) => {
-    if (window.confirm(`क्या आप ${formatDateHindi(dateKey)} के सभी बिल हटाना चाहते हैं?`)) {
+    if (window.confirm(t.confirmDeleteFolder(formatDateHindi(dateKey)))) {
       setBills((prevBills) => {
         const updated = { ...prevBills };
         delete updated[dateKey];
@@ -152,9 +234,9 @@ export default function BillManager() {
       try {
         const imported = JSON.parse(event.target.result);
         setBills(imported);
-        alert('✅ Bills successfully import ho gaye!');
+        alert(t.alertImportSuccess);
       } catch (err) {
-        alert('❌ File format galat hai!');
+        alert(t.alertImportError);
       }
     };
     reader.readAsText(file);
@@ -163,9 +245,9 @@ export default function BillManager() {
 
   // Clear all data
   const clearAllData = () => {
-    if (window.confirm('⚠️ क्या आप सभी बिल हटाना चाहते हैं? यह action undo नहीं हो सकता!')) {
+    if (window.confirm(t.confirmClearAll)) {
       setBills({});
-      alert('✅ सभी डेटा delete हो गया!');
+      alert(t.alertClearSuccess);
     }
   };
 
@@ -173,21 +255,67 @@ export default function BillManager() {
   const sortedDates = Object.keys(bills).sort((a, b) => new Date(b) - new Date(a));
   const filteredBills = getFilteredBills();
 
-  // Format date in Hindi
+  // Format date according to selected language
   const formatDateHindi = (dateStr) => {
     const date = new Date(dateStr + 'T00:00:00');
     const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-    return date.toLocaleDateString('hi-IN', options);
+    return date.toLocaleDateString(t.dateLocale, options);
   };
 
   return (
     <div style={{ minHeight: '100vh', background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', padding: '20px', fontFamily: 'Arial, sans-serif' }}>
       <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
+        {/* Language Selector */}
+        <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '12px' }}>
+          <div style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            background: 'rgba(255,255,255,0.15)',
+            border: '1px solid rgba(255,255,255,0.4)',
+            borderRadius: '8px',
+            padding: '4px',
+            gap: '4px'
+          }}>
+            <Globe size={16} style={{ color: 'white', marginLeft: '6px' }} />
+            <button
+              onClick={() => setLang('hi')}
+              style={{
+                padding: '6px 14px',
+                borderRadius: '6px',
+                border: 'none',
+                cursor: 'pointer',
+                fontWeight: 'bold',
+                fontSize: '0.85em',
+                background: lang === 'hi' ? 'white' : 'transparent',
+                color: lang === 'hi' ? '#667eea' : 'white',
+                transition: 'all 0.2s'
+              }}
+            >
+              हिंदी
+            </button>
+            <button
+              onClick={() => setLang('en')}
+              style={{
+                padding: '6px 14px',
+                borderRadius: '6px',
+                border: 'none',
+                cursor: 'pointer',
+                fontWeight: 'bold',
+                fontSize: '0.85em',
+                background: lang === 'en' ? 'white' : 'transparent',
+                color: lang === 'en' ? '#667eea' : 'white',
+                transition: 'all 0.2s'
+              }}
+            >
+              English
+            </button>
+          </div>
+        </div>
+
         {/* Header */}
         <div style={{ textAlign: 'center', color: 'white', marginBottom: '30px' }}>
-          <h1 style={{ fontSize: '2.8em', margin: '0 0 10px 0' }}>📋 Bill Manager Pro</h1>
-          <p style={{ fontSize: '1.1em', margin: '0 0 4px 0', opacity: 0.9 }}>सभी बिल को आसानी से organize करें</p>
-          <p style={{ fontSize: '0.9em', margin: '0', opacity: 0.75 }}>Organize all your bills, effortlessly</p>
+          <h1 style={{ fontSize: '2.8em', margin: '0 0 10px 0' }}>{t.appName}</h1>
+          <p style={{ fontSize: '1.1em', margin: '0', opacity: 0.9 }}>{t.subtitle}</p>
         </div>
 
         {/* Statistics */}
@@ -204,7 +332,7 @@ export default function BillManager() {
             boxShadow: '0 8px 20px rgba(0,0,0,0.15)',
             textAlign: 'center'
           }}>
-            <p style={{ margin: '0', color: '#666', fontSize: '0.9em' }}>📊 कुल बिल</p>
+            <p style={{ margin: '0', color: '#666', fontSize: '0.9em' }}>{t.statTotalBills}</p>
             <h3 style={{ margin: '8px 0 0 0', color: '#667eea', fontSize: '2.2em' }}>{stats.totalBills}</h3>
           </div>
           <div style={{
@@ -214,7 +342,7 @@ export default function BillManager() {
             boxShadow: '0 8px 20px rgba(0,0,0,0.15)',
             textAlign: 'center'
           }}>
-            <p style={{ margin: '0', color: '#666', fontSize: '0.9em' }}>📅 कुल दिन</p>
+            <p style={{ margin: '0', color: '#666', fontSize: '0.9em' }}>{t.statTotalDays}</p>
             <h3 style={{ margin: '8px 0 0 0', color: '#764ba2', fontSize: '2.2em' }}>{stats.totalDates}</h3>
           </div>
           <div style={{
@@ -224,7 +352,7 @@ export default function BillManager() {
             boxShadow: '0 8px 20px rgba(0,0,0,0.15)',
             textAlign: 'center'
           }}>
-            <p style={{ margin: '0', color: '#666', fontSize: '0.9em' }}>⏰ आज</p>
+            <p style={{ margin: '0', color: '#666', fontSize: '0.9em' }}>{t.statToday}</p>
             <h3 style={{ margin: '8px 0 0 0', color: '#ff4757', fontSize: '2.2em' }}>{stats.todayBills}</h3>
           </div>
           <div style={{
@@ -234,7 +362,7 @@ export default function BillManager() {
             boxShadow: '0 8px 20px rgba(0,0,0,0.15)',
             textAlign: 'center'
           }}>
-            <p style={{ margin: '0', color: '#666', fontSize: '0.9em' }}>💾 कुल Size</p>
+            <p style={{ margin: '0', color: '#666', fontSize: '0.9em' }}>{t.statTotalSize}</p>
             <h3 style={{ margin: '8px 0 0 0', color: '#2ed573', fontSize: '2.2em' }}>{stats.totalSize} KB</h3>
           </div>
         </div>
@@ -250,7 +378,7 @@ export default function BillManager() {
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '25px' }}>
             <div>
               <label style={{ display: 'block', marginBottom: '10px', fontWeight: 'bold', color: '#333', fontSize: '1em' }}>
-                📅 तारीख चुनें:
+                {t.selectDate}
               </label>
               <input
                 type="date"
@@ -271,11 +399,11 @@ export default function BillManager() {
             </div>
             <div>
               <label style={{ display: 'block', marginBottom: '10px', fontWeight: 'bold', color: '#333', fontSize: '1em' }}>
-                🔍 बिल खोजें:
+                {t.searchBills}
               </label>
               <input
                 type="text"
-                placeholder="बिल का नाम लिखें..."
+                placeholder={t.searchPlaceholder}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 style={{
@@ -307,7 +435,7 @@ export default function BillManager() {
             onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
             >
               <Plus size={18} style={{ marginRight: '8px' }} />
-              {loading ? 'Upload हो रहा है...' : 'Gallery से चुनें'}
+              {loading ? t.uploading : t.galleryBtn}
               <input
                 type="file"
                 multiple
@@ -334,7 +462,7 @@ export default function BillManager() {
             onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
             >
               <Camera size={18} style={{ marginRight: '8px' }} />
-              {loading ? 'Upload हो रहा है...' : 'कैमरा से खींचें'}
+              {loading ? t.uploading : t.cameraBtn}
               <input
                 type="file"
                 accept="image/*"
@@ -356,9 +484,9 @@ export default function BillManager() {
                 cursor: 'pointer'
               }}
             >
-              <option value="newest">✨ नई पहले</option>
-              <option value="oldest">🕐 पुरानी पहले</option>
-              <option value="name">🔤 नाम के अनुसार</option>
+              <option value="newest">{t.sortNewest}</option>
+              <option value="oldest">{t.sortOldest}</option>
+              <option value="name">{t.sortName}</option>
             </select>
 
             <select
@@ -372,7 +500,7 @@ export default function BillManager() {
                 cursor: 'pointer'
               }}
             >
-              <option value="all">📋 सभी तारीखें</option>
+              <option value="all">{t.allDates}</option>
               {sortedDates.map(date => (
                 <option key={date} value={date}>{formatDateHindi(date)}</option>
               ))}
@@ -396,7 +524,7 @@ export default function BillManager() {
             onMouseLeave={(e) => e.currentTarget.style.background = '#2ed573'}
             >
               <Download size={16} style={{ marginRight: '6px' }} />
-              Backup लें
+              {t.backupBtn}
               <input
                 type="file"
                 accept=".json"
@@ -424,7 +552,7 @@ export default function BillManager() {
               onMouseLeave={(e) => e.target.style.background = '#1e90ff'}
             >
               <Download size={16} style={{ marginRight: '6px' }} />
-              Export करें
+              {t.exportBtn}
             </button>
 
             <button
@@ -446,7 +574,7 @@ export default function BillManager() {
               onMouseLeave={(e) => e.target.style.background = '#ff4757'}
             >
               <RefreshCw size={16} style={{ marginRight: '6px' }} />
-              सब मिटाएं
+              {t.clearAllBtn}
             </button>
           </div>
         </div>
@@ -462,8 +590,8 @@ export default function BillManager() {
               boxShadow: '0 10px 30px rgba(0,0,0,0.2)'
             }}>
               <FileImage size={80} style={{ color: '#ddd', margin: '0 auto 20px' }} />
-              <p style={{ color: '#999', fontSize: '1.3em', margin: '0' }}>अभी कोई बिल नहीं है</p>
-              <p style={{ color: '#bbb', fontSize: '1em', margin: '10px 0 0 0' }}>अपना पहला बिल add करने के लिए ऊपर क्लिक करें 👆</p>
+              <p style={{ color: '#999', fontSize: '1.3em', margin: '0' }}>{t.noBillsTitle}</p>
+              <p style={{ color: '#bbb', fontSize: '1em', margin: '10px 0 0 0' }}>{t.noBillsSubtitle}</p>
             </div>
           ) : filteredBills.length === 0 ? (
             <div style={{
@@ -474,8 +602,8 @@ export default function BillManager() {
               boxShadow: '0 10px 30px rgba(0,0,0,0.2)'
             }}>
               <Search size={80} style={{ color: '#ddd', margin: '0 auto 20px' }} />
-              <p style={{ color: '#999', fontSize: '1.3em', margin: '0' }}>कोई बिल नहीं मिला</p>
-              <p style={{ color: '#bbb', fontSize: '1em', margin: '10px 0 0 0' }}>अलग search या filter try करें</p>
+              <p style={{ color: '#999', fontSize: '1.3em', margin: '0' }}>{t.noResultsTitle}</p>
+              <p style={{ color: '#bbb', fontSize: '1em', margin: '10px 0 0 0' }}>{t.noResultsSubtitle}</p>
             </div>
           ) : (
             <>
@@ -501,7 +629,7 @@ export default function BillManager() {
                     }}>
                       <div>
                         <h2 style={{ margin: '0', fontSize: '1.4em' }}>📅 {formatDateHindi(dateKey)}</h2>
-                        <p style={{ margin: '5px 0 0 0', opacity: 0.9 }}>कुल {bills[dateKey].length} बिल</p>
+                        <p style={{ margin: '5px 0 0 0', opacity: 0.9 }}>{t.totalWord} {bills[dateKey].length} {t.billsWord}</p>
                       </div>
                       <button
                         onClick={() => deleteDateFolder(dateKey)}
@@ -519,7 +647,7 @@ export default function BillManager() {
                         onMouseLeave={(e) => e.target.style.background = 'rgba(255,0,0,0.2)'}
                       >
                         <Trash2 size={16} style={{ display: 'inline', marginRight: '5px' }} />
-                        Folder हटाएं
+                        {t.deleteFolderBtn}
                       </button>
                     </div>
 
@@ -606,7 +734,7 @@ export default function BillManager() {
                               onMouseLeave={(e) => e.target.style.background = '#ff4757'}
                             >
                               <Trash2 size={14} style={{ display: 'inline', marginRight: '5px' }} />
-                              Delete
+                              {t.deleteBtn}
                             </button>
                           </div>
                         </div>
@@ -634,7 +762,7 @@ export default function BillManager() {
                   }}>
                     <div>
                       <h2 style={{ margin: '0', fontSize: '1.4em' }}>📅 {formatDateHindi(filterDate)}</h2>
-                      <p style={{ margin: '5px 0 0 0', opacity: 0.9 }}>कुल {bills[filterDate].length} बिल</p>
+                      <p style={{ margin: '5px 0 0 0', opacity: 0.9 }}>{t.totalWord} {bills[filterDate].length} {t.billsWord}</p>
                     </div>
                     <button
                       onClick={() => deleteDateFolder(filterDate)}
@@ -652,7 +780,7 @@ export default function BillManager() {
                       onMouseLeave={(e) => e.target.style.background = 'rgba(255,0,0,0.2)'}
                     >
                       <Trash2 size={16} style={{ display: 'inline', marginRight: '5px' }} />
-                      Folder हटाएं
+                      {t.deleteFolderBtn}
                     </button>
                   </div>
 
@@ -734,7 +862,7 @@ export default function BillManager() {
                             onMouseLeave={(e) => e.target.style.background = '#ff4757'}
                           >
                             <Trash2 size={14} style={{ display: 'inline', marginRight: '5px' }} />
-                            Delete
+                            {t.deleteBtn}
                           </button>
                         </div>
                       </div>
@@ -821,7 +949,7 @@ export default function BillManager() {
                 }}
               >
                 <Download size={16} style={{ marginRight: '6px' }} />
-                Photo Download करें
+                {t.photoDownloadBtn}
               </a>
             </div>
           </div>
@@ -837,13 +965,10 @@ export default function BillManager() {
           lineHeight: '1.8'
         }}>
           <p style={{ fontSize: '1.15em', fontWeight: 'bold', margin: '0 0 6px 0' }}>
-            📋 Bill Manager Pro
+            {t.appName}
           </p>
-          <p style={{ margin: '0 0 4px 0', opacity: 0.95 }}>
-            आपके सभी बिल, एक जगह, हमेशा सुरक्षित 🔒
-          </p>
-          <p style={{ margin: '0', opacity: 0.85, fontSize: '0.9em' }}>
-            All your bills, in one place, always secure 🔒
+          <p style={{ margin: '0', opacity: 0.9, fontSize: '0.9em' }}>
+            {t.footerLine1}
           </p>
         </div>
       </div>
