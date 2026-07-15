@@ -1,0 +1,248 @@
+/* Bill Manager Pro — global styles
+   'Hind' font renders both Hindi (Devanagari) and English beautifully in one family. */
+
+@import url('https://fonts.googleapis.com/css2?family=Hind:wght@400;500;600;700&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Hind', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  min-height: 100vh;
+  color: #333;
+
+  /* Soft animated gradient — slowly drifts so the background feels alive without being distracting */
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #667eea 100%);
+  background-size: 300% 300%;
+  animation: gradientDrift 18s ease infinite;
+}
+
+@keyframes gradientDrift {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+html, body, #root {
+  width: 100%;
+  height: 100%;
+}
+
+/* ---------- Smooth defaults for every interactive element ---------- */
+button, input, select, textarea, a, label {
+  font-family: inherit;
+  transition: transform 0.15s ease, box-shadow 0.2s ease, opacity 0.2s ease, filter 0.2s ease;
+}
+
+/* Gentle press feedback — makes buttons feel tactile without touching their existing inline colors */
+button:not(:disabled):active {
+  transform: scale(0.96);
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
+  filter: grayscale(0.15);
+}
+
+/* Elegant, accessible focus rings (keyboard navigation friendly) */
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+a:focus-visible {
+  outline: 3px solid rgba(102, 126, 234, 0.55);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+input:focus, select:focus, textarea:focus {
+  outline: none;
+}
+
+input::placeholder, textarea::placeholder {
+  color: #a3a8c2;
+  opacity: 1;
+}
+
+/* ---------- Scrollbar styling ---------- */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #667eea 0%, #764ba2 100%);
+  border-radius: 10px;
+  border: 2px solid #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #764ba2 0%, #667eea 100%);
+}
+
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #764ba2 #f1f1f1;
+}
+
+/* ---------- Selection styling ---------- */
+::selection {
+  background: #667eea;
+  color: white;
+}
+
+::-moz-selection {
+  background: #667eea;
+  color: white;
+}
+
+/* ---------- Button reset ---------- */
+button {
+  font-family: inherit;
+}
+
+/* ---------- Image polish ---------- */
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Zoom the bill/gift thumbnail slightly on hover — parent cards already clip with border-radius + overflow hidden */
+.bill-card img,
+[style*="cursor: pointer"] img {
+  transition: transform 0.3s ease, filter 0.3s ease;
+}
+
+/* ---------- Link styling ---------- */
+a {
+  color: #667eea;
+  text-decoration: none;
+}
+
+a:hover {
+  color: #764ba2;
+}
+
+/* ---------- Reusable animation utilities (available for future use) ---------- */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+.fade-in {
+  animation: fadeInUp 0.35s ease both;
+}
+
+.spinner {
+  border: 3px solid rgba(255, 255, 255, 0.35);
+  border-top-color: white;
+  border-radius: 50%;
+  width: 22px;
+  height: 22px;
+  animation: spin 0.8s linear infinite;
+}
+
+/* ---------- Responsive text ---------- */
+@media (max-width: 768px) {
+  body {
+    font-size: 14px;
+  }
+
+  h1 {
+    font-size: 1.8em !important;
+  }
+
+  h2 {
+    font-size: 1.3em !important;
+  }
+
+  button {
+    font-size: 0.9em !important;
+  }
+}
+
+@media (max-width: 480px) {
+  body {
+    font-size: 12px;
+  }
+
+  h1 {
+    font-size: 1.5em !important;
+  }
+
+  h2 {
+    font-size: 1.1em !important;
+  }
+}
+
+/* ---------- Print styles ---------- */
+@media print {
+  body {
+    background: white;
+    animation: none;
+  }
+
+  button, [role="button"] {
+    display: none;
+  }
+}
+
+/* ---------- Dark mode support ---------- */
+@media (prefers-color-scheme: dark) {
+  body {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #1a1a2e 100%);
+    background-size: 300% 300%;
+    color: #f0f0f0;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: #23233a;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    border-color: #23233a;
+  }
+
+  input::placeholder, textarea::placeholder {
+    color: #7c81a0;
+  }
+}
+
+/* ---------- Accessibility ---------- */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  body {
+    animation: none !important;
+  }
+}
